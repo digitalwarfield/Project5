@@ -34,6 +34,11 @@ JavaScript - https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min
 7) `cd` into /vagrant
 8) Use the command `python database_setup.py` to create a new database or use the one included in the zip
 
+# If not using Vagrant
+The following dependencies are required to run this application.
+1) `sudo pip install flask`
+2) `sudo pip install requests`
+3) `sudo pip install sqlalchemy`
 # Follow Google instructions on setting up the client_secrets.json file
 1) Run through the latest instructions on how to create the client_secret.json file from the "Requirements" section.  Once that has been created place that file in the same directory as justin_warfield_project_4.py
 1a) For authorized JavaScript origins add http://localhost:8080
