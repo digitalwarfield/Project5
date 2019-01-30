@@ -1,6 +1,6 @@
 # Item Catalog - Project 4
 
-This project was created for Udacity Project 4.  The requirements for this project were:  
+This project was created for Udacity Project 5.  The requirements for this project were:  
 
   - To create and read a SQLite database for a catalog project.
   - Provide CRUD functions for items and read functions for categories
@@ -40,12 +40,12 @@ The following dependencies are required to run this application.
 2) `sudo pip install requests`
 3) `sudo pip install sqlalchemy`
 # Follow Google instructions on setting up the client_secrets.json file
-1) Run through the latest instructions on how to create the client_secret.json file from the "Requirements" section.  Once that has been created place that file in the same directory as justin_warfield_project_4.py
+1) Run through the latest instructions on how to create the client_secret.json file from the "Requirements" section.  Once that has been created place that file in the same directory as justin_warfield_project_5.py
 1a) For authorized JavaScript origins add http://localhost:8080
 1b) For authorized redirect URIs add http://localhost:8080/gconnect
 
 # Running the script
-1) To run the script, execute `python justin_warfield_project_4.py` from the command-line
+1) To run the script, execute `python justin_warfield_project_5.py` from the command-line
 
 # Accessing the site
 1) Open a web browser and go to http://localhost:8080
