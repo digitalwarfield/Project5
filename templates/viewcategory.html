@@ -1,0 +1,61 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == "error" %}
+<div class="alert alert-danger" role="alert">
+    {{message}}
+</div>
+{% else %}
+<div class="alert alert-success" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<table>
+    <tr>
+        <td><h3>{{category.name}} Items ({{items|count}} items)</h3></td>
+    </tr>
+    <tr>
+        <td>
+            {% if 'email' in login_session %}
+            <a class="btn btn-primary" href='{{url_for('addItem') }}'><small>Add items</small></a> |
+            <a class="btn btn-danger" href='{{url_for('removeCategory', cat_name=category.name) }}'><small>Remove
+                    Category</small></a>
+        </td>
+        {% endif %}
+        </td>
+    </tr>
+    <table>
+        <br />
+        <div class="container-fluid">
+
+            <div class="row">
+                {% if items !=[] %}
+                {% for item in items %}
+                <div class="col-sm-4">
+                    <div class="card" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">{{item.title}}</h5>
+                            {% if item.description|length > 100%}
+                            <p class="card-text">{{item.description[0:100]}}...</p>
+                            {% else %}
+                            <p class="card-text">{{item.description[0:100]}}</p>
+                            {% endif %}
+                            <a href='{{url_for('item', cat_name=category.name, item_name=item.title, action='view') }}'
+                                class="btn btn-primary">View Item</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+                {% endif %}
+            </div>
+        </div>
+    </table>
+</table>
+{% endblock %}

@@ -1,0 +1,30 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+<form method="POST" action="#">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    {% if category == "error" %}
+    <div class="alert alert-danger" role="alert">
+        {{message}}
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="form-group">
+            <label>Are you sure you want to delete the <b><i>{{cat_name}}</i></b> category?</label>
+        <br />
+            <input type="submit" class="btn btn-danger" name="submit" value="Confirm Removal" />
+        </div>
+</form>
+</body>
+
+</html>
+{% endblock %}

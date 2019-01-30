@@ -1,0 +1,32 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="text-center">
+        <h4>Edit Item</h4>
+        <h6>Only change the necessary fields.  Unchanged content will remain the same.</h6>
+    </div>
+<form method="POST" action="#">
+    <div class="form-group">
+        <label>Title:</label>
+        <input type="text" class="form-control" name="title" placeholder="{{item.title}}" />
+        <label>Description:</label>
+        <textarea id="comment" class="form-control" name="description" placeholder="{{item.description}}"></textarea>
+        <label>Category</label>
+        <select class="form-control" name="category">
+            {{form_data}}
+            {% for category in categories %}
+            {% if item.name == category.name %}
+            <option value="{{category.cat_id}}" selected>{{category.name}}</option>
+            {% else %}
+            <option value="{{category.cat_id}}">{{category.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br />
+        <div class="text-center">
+            <input class="btn btn-primary" type="submit" value="Edit Item" />
+        </div>
+    </div>
+
+</form>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == "error" %}
+<div class="alert alert-danger" role="alert">
+    {{message}}
+</div>
+{% else %}
+<div class="alert alert-success" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<div class="text-center">
+    <h4>Add New Item</h4>
+</div>
+<form method="POST" action="#">
+    <div class="form-group">
+        <label>Title:</label>
+        <input class="form-control" type="text" name="title" required value="{{form_data["title"]}}" />
+        <label>Description:</label>
+        <textarea id="comment" class="form-control" name="description" required value="{{form_data["description"]}}"></textarea>
+        <label>Category:</label>
+        <select class="form-control" name="category">
+            {{form_data}}
+            {% for category in categories %}
+            {% if form_data["category"] == category.name %}
+            <option value="{{category.cat_id}}" selected>{{category.name}}</option>
+            {% else %}
+            <option value="{{category.cat_id}}">{{category.name}}</option>
+            {% endif %}
+            {% endfor %}
+        </select>
+        <br />
+        <div class="text-center">
+            <input class="btn btn-primary" type="submit" value="Add Item" />
+        </div>
+    </div>
+
+</form>
+{% endblock %}

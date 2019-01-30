@@ -1,0 +1,14 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="card border-dark mb-3">
+    <div class="card-body">
+        <h5 class="card-title">{{item.title}}</h5>
+        <p class="card-text">{{item.description}}</p>
+        {% if 'email' in login_session %}
+        <a class="btn btn-primary" href='{{url_for('item', cat_name=item.name, item_name=item.title, action='edit') }}'>Edit</a>
+        <a class="btn btn-danger" href='{{url_for('item', cat_name=item.name, item_name=item.title, action='delete') }}'>Delete</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

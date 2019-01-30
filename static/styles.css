@@ -1,0 +1,17 @@
+.rounded {
+    border-radius:15px!important
+}
+
+html, body {
+    height: 100%;
+}
+
+/*https://stackoverflow.com/questions/11677886/twitter-bootstrap-div-in-container-with-100-height*/
+.fill { 
+    min-height: 100%;
+    height: 100%;
+}
+
+.container {
+    padding-top: 20px
+}

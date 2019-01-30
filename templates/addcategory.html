@@ -1,0 +1,32 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="text-center">
+    <h4>Add New Category</h4>
+</div>
+<form method="POST" action="#">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    {% if category == "error" %}
+    <div class="alert alert-danger" role="alert">
+        {{message}}
+    </div>
+    {% else %}
+    <div class="alert alert-success" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    </ul>
+    {% endif %}
+    {% endwith %}
+    <div class="form-group">
+        <label>Category Name:</label>
+        <input class="form-control" required type="text" name="category" />
+        <br />
+        <div class="text-center">
+            <input type="submit" class="btn btn-primary" name="submit" value="Add" />
+        </div>
+</form>
+{% endblock %}

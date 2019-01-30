@@ -1,0 +1,18 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+<table>
+    <tr>
+        <td>
+            <h1></h1>
+        </td>
+    </tr>
+    <form method="POST" action="#">
+        <div class="form-group">
+            <label>Are you sure you want to delete <b><i>{{item.title}}</i></b>?</label>
+            <br />
+            <input type="submit" class="btn btn-danger" name="submit" value="Confirm Delete" />
+        </div>
+    </form>
+</table>
+{% endblock %}

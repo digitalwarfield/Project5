@@ -1,0 +1,14 @@
+<div  class="row">
+	<div class="col-md-9">
+		<a href="{{url_for('mainPage')}}">Catalog App</a>
+	</div>
+	<div class="col-md-3">
+			{% if login_session['email'] %}
+			<div align="right">{{login_session['full_name']}} <i class="fa fa-google"></i> <a href='{{url_for('revoke') }}'>Logout</a></div>
+			{% else %}
+			<!-- https://startbootstrap.com/snippets/login/ -->
+			<a id="google-button" class="btn btn-sm btn-google btn-block text-uppercase" href='{{url_for('login') }}'><i class="fa fa-google"></i> Sign in with Google</a>
+			{% endif %}		
+	</div>	
+</div>
+<hr>

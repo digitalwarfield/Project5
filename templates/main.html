@@ -1,0 +1,66 @@
+{% extends "starter.html" %}
+{% block content %}
+{% include "header.html" %}
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+{% for category, message in messages %}
+{% if category == "error" %}
+<div class="alert alert-danger" role="alert">
+    {{message}}
+</div>
+{% else %}
+<div class="alert alert-success" role="alert">
+    {{message}}
+</div>
+{% endif %}
+{% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+<div class="row">
+    <div class="table-responsive col-md-6">
+        <table>
+            {% if 'email' in login_session %}
+            <tr>
+                <td><a href='{{url_for('addCategories')}}'><small>Add Category</small></a></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>
+                    <h6>Categories</h6>
+                </td>
+            </tr>
+
+
+            {% for category in categories %}
+            <tr>
+                <td><a href='{{url_for('viewCategory', cat_name=category.name ) }}'>{{category.name}}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+    <div class="table-responsive col-md-6">
+        <table>
+            {% if 'email' in login_session %}
+            <tr>
+                <td><a href='{{url_for('addItem') }}'><small>Add a new item</small></a></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td>
+                    <h6>LATEST ITEMS</h6>
+                </td>
+            </tr>
+            {% for item in latest_items %}
+            <tr>
+                <td>
+                    <a href='{{url_for('item', cat_name=item.name, item_name=item.title, action='view') }}'>{{item.title}}
+                        ({{item.name}})</a>
+                </td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+</div>
+{% endblock %}
