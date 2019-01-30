@@ -1,4 +1,4 @@
-# Item Catalog - Project 4
+# Item Catalog - Project 5
 
 This project was created for Udacity Project 5.  The requirements for this project were:  
 
