@@ -468,6 +468,6 @@ def item(cat_name, item_name, action):
 
 
 if __name__ == '__main__':
-    app.secret_key = '9691ab4439f4c5909719568b8a8339d9cdd201020e5b267ef2'
+    app.secret_key = os.urandom(16)
     app.debug = True
     app.run(host='0.0.0.0', port=8080)
