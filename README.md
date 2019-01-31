@@ -15,6 +15,7 @@ Packages Added
 - Apache - `sudo apt-get install apache2`
 - Libapache2-mod-wsgi - `sudo apt-get install libapache2-mod-wsgi`
 - Postgres - `sudo apt-get install postgresql`
+- PEP8 styling - `sudo pip install pycodestyle`
 
 Postres Setup Summary
 - STEP 1: Switch the running user to postgres and then run psql
