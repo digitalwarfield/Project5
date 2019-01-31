@@ -1,8 +1,8 @@
 # Linux Deployment - Project 5
 
-IP of server: 3.90.185.173
-SSH port: 2200
-Website URL: http://project5.digitalwarfield.com
+- IP of server: 3.90.185.173
+- SSH port: 2200
+- Website URL: http://project5.digitalwarfield.com
 
 #### These are the changes that were required from Project 4 to 5
 Packages Added
