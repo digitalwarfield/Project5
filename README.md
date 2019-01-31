@@ -43,7 +43,8 @@ Device change summary:
 - Run apt-get update and apt-get upgrade to collect/install package updates
 - Create a grader user and generate an ssh keypair for their access
 - Install git to push and pull updates as required
-
+- Changed permissions to ubuntu:www-data on /var/www/html
+- Updated group membership for ubuntu and grader to www-data group
 
 # Item Catalog - Project 4
 
