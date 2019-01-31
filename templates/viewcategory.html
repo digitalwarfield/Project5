@@ -22,14 +22,13 @@
         <td><h3>{{category.name}} Items ({{items|count}} items)</h3></td>
     </tr>
     <tr>
+            {% if login_session["user_id"] == category.user_id %}
         <td>
-            {% if 'email' in login_session %}
-            <a class="btn btn-primary" href='{{url_for('addItem') }}'><small>Add items</small></a> |
-            <a class="btn btn-danger" href='{{url_for('removeCategory', cat_name=category.name) }}'><small>Remove
+            <a class="btn btn-primary" href='{{url_for('addItem') }}'><small>Add items</small></a>
+            | <a class="btn btn-danger" href='{{url_for('removeCategory', cat_name=category.name) }}'><small>Remove
                     Category</small></a>
         </td>
         {% endif %}
-        </td>
     </tr>
     <table>
         <br />
