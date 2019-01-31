@@ -15,18 +15,31 @@ from flask import session as login_session
 from functools import wraps
 from datetime import datetime
 from sqlalchemy.pool import SingletonThreadPool
-from database_setup import Categories, Items
+
+# Add the working path so we can call database_setup
+working_path = "/var/www/html"
+sys.path.append(working_path)
+
+from database_setup import Categories, Items, Users
 import uuid
 
 
 app = Flask(__name__)
-"""
-This is used to keep Flask in the same pool to stop web errors
-https://stackoverflow.com/questions/48218065/programmingerror-
-sqlite-objects-created-in-a-thread-can-only-be-used-in-that-sa
-"""
-engine = create_engine('sqlite:///catalog.db',
-                       connect_args={'check_same_thread': False})
+# Collect db logins and flask secret key from config file
+try:
+    app_config_file = open("/var/www/html/app_config.json", "r")
+    app_config = json.load(app_config_file)
+    user = app_config["db_user"]
+    password = app_config["db_pass"]
+    database = app_config["db_database"]
+    app.secret_key = app_config["app_secret"]
+except Exception:
+    print("Failed to open app_config.json file")
+    raise
+
+#engine = create_engine('sqlite:///catalog.db',
+#                       connect_args={'check_same_thread': False})
+database_params = "postgresql://{}:{}@localhost/{}".format(user,password,database)
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -135,12 +148,27 @@ def gconnect():
                 login_session["full_name"] = "{} {}"\
                                              .format(response["given_name"],
                                                      response["family_name"])
+                try:
+                    user_id = session.query(Users)\
+                                     .filter_by(email=login_session["email"])\
+                                     .one()
+                except Exception:
+                    user_info = Users(email=login_session["email"],
+                                      full_name=login_session["full_name"],
+                                      picture=login_session["picture"])
+                    session.add(user_info)
+                    session.commit()
+                    user_id = session.query(Users)\
+                                     .filter_by(email=login_session["email"])\
+                                     .one()
+                print(user_id.user_id)
+                login_session["user_id"] = user_id.user_id
                 flash("Login Successful", "info")
             else:
                 flash("Did not get a valid response from Google. \
                       Please try again", "error")
         except Exception:
-            flash("Login to get access_toke.  Please try again", "error")
+            flash("Login to get access_token.  Please try again", "error")
     return redirect(url_for('mainPage'))
 
 
@@ -162,17 +190,15 @@ def revoke():
                               headers={'content-type':
                                        'application/x-www-form-urlencoded'})
         if (revoke.status_code == 200):
-            del login_session['credentials']
-            del login_session['email']
-            del login_session['picture']
-            del login_session['full_name']
             flash("Logout Successful", "info")
         else:
+            flash("Google token no longer valid.", "error")
+        if 'credentials' in login_session:
             del login_session['credentials']
             del login_session['email']
             del login_session['picture']
             del login_session['full_name']
-            flash("Google token no longer valid.", "error")
+            del login_session['user_id']
     except Exception:
         flash("Logout Failed", "error")
     return redirect(url_for('mainPage'))
@@ -216,7 +242,8 @@ def addCategories():
     """
     if request.method == 'POST':
         if request.form["category"]:
-            category = Categories(name=request.form["category"])
+            category = Categories(name=request.form["category"],
+                                  user_id=login_session["user_id"])
             try:
                 session.add(category)
                 session.commit()
@@ -248,9 +275,14 @@ def removeCategory(cat_name):
     if request.method == 'POST':
         try:
             category = session.query(Categories).filter_by(name=cat_name).one()
-            session.delete(category)
-            session.commit()
-            flash("Category was removed!", 'info')
+            # Validate that the user is removing a category that they created
+            # and not attempting to delete one they didn't create
+            if login_session["user_id"] == category.user_id:
+                session.delete(category)
+                session.commit()
+                flash("Category was removed!", 'info')
+            else:
+                flash("You can only remove a category you created!", "error")
             return redirect(url_for('mainPage'))
         except Exception:
             session.rollback()
@@ -274,6 +306,16 @@ def addItem():
     page.
     """
     if request.method == 'POST':
+        # Validate if the user is attempting to add and item to a
+        # category that they own
+        try:
+            session.query(Categories)\
+                   .filter_by(user_id=login_session["user_id"],
+                              cat_id=request.form['category'])\
+                   .one()
+        except Exception:
+            flash("Items can only be added to your categories!", "error")
+            return redirect(url_for('mainPage'))
         # Used to see if all the required fields were in the POST request
         error = 0
         if not request.form['title']:
@@ -290,7 +332,8 @@ def addItem():
             item = Items(title=request.form['title'],
                          description=request.form['description'],
                          cat_id=request.form["category"],
-                         last_update=datetime.now())
+                         last_update=datetime.now(),
+                         user_id=login_session["user_id"])
             try:
                 session.add(item)
                 session.commit()
@@ -300,7 +343,9 @@ def addItem():
                 session.rollback()
                 flash("Duplicate item found or category doesn't exist.",
                       "error")
-    categories = session.query(Categories).order_by(Categories.name).all()
+    categories = session.query(Categories)\
+                        .filter_by(user_id=login_session["user_id"])\
+                        .order_by(Categories.name).all()
     if not categories:
         flash("No categories found.  Please set one up first.", 'error')
         return redirect(url_for('addCategories'))
@@ -410,6 +455,7 @@ def item(cat_name, item_name, action):
                              Items.title,
                              Items.description,
                              Items.cat_id,
+                             Items.user_id,
                              Categories.name)\
                       .join(Categories,
                             Items.cat_id == Categories.cat_id)\
@@ -419,6 +465,31 @@ def item(cat_name, item_name, action):
         flash("No item was found", 'error')
         return redirect(url_for('mainPage'))
     if request.method == "POST":
+        try:
+            # Validate that the category and item are both owned
+            # by the same user that created them
+            item = session.query(Items.item_id,
+                                 Items.title,
+                                 Items.description,
+                                 Items.cat_id,
+                                 Items.user_id,
+                                 Categories.name)\
+                          .join(Categories,
+                                Items.cat_id == Categories.cat_id)\
+                          .filter(Categories.name == cat_name,
+                                  Items.title == item_name,
+                                  Categories.user_id ==
+                                  login_session["user_id"],
+                                  Items.user_id ==
+                                  login_session["user_id"])\
+                          .one()
+        except Exception:
+            if action == "delete":
+                flash("You can only delete items you created!", "error")
+            else:
+                flash("You can only edit items/categories you created!",
+                      "error")
+            return redirect(url_for('mainPage'))
         if action == "delete":
             try:
                 found_item = session.query(Items).filter_by(
@@ -452,7 +523,9 @@ def item(cat_name, item_name, action):
                 return redirect(url_for('mainPage'))
 
     if action == "edit":
-        categories = session.query(Categories).order_by(Categories.name).all()
+        categories = session.query(Categories)\
+                            .filter_by(user_id=login_session["user_id"])\
+                            .order_by(Categories.name).all()
         return (render_template("edititem.html",
                                 item=item,
                                 categories=categories,
@@ -465,9 +538,3 @@ def item(cat_name, item_name, action):
         return (render_template("viewitem.html",
                                 item=item,
                                 login_session=login_session))
-
-
-if __name__ == '__main__':
-    app.secret_key = os.urandom(16)
-    app.debug = True
-    app.run(host='0.0.0.0', port=8080)
