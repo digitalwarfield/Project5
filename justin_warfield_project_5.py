@@ -519,7 +519,6 @@ def item(cat_name, item_name, action):
                 return redirect(url_for('mainPage'))
             except Exception as e:
                 session.rollback()
-                flash(e)
                 flash("Failed item edit", "error")
                 return redirect(url_for('mainPage'))
 
