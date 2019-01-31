@@ -1,4 +1,51 @@
-# Item Catalog - Project 5
+# Linux Deployment - Project 5
+
+IP of server: 3.90.185.173
+Website URL: http://project5.digitalwarfield.com
+
+#### These are the changes that were required from Project 4 to 5
+Packages Added
+- Needed for Python / Postgres integration - `sudo pip install psycopg2`
+- Needed for Python / Postgres - `sudo pip install psycopg2-binary`
+- Needed to fix datetime in Postgres - `sudo pip install pytz`
+- Flask - `sudo pip install flask`
+- Requests - `sudo pip install requests`
+- SQLAlchemy - `sudo pip install sqlalchemy`
+- Apache - `sudo apt-get install apache2`
+- Libapache2-mod-wsgi - `sudo apt-get install libapache2-mod-wsgi`
+- Postgres - `sudo apt-get install postgresql`
+
+Postres Setup Summary
+- STEP 1: Switch the running user to postgres and then run psql
+- STEP 2: Create the catalog database
+- STEP 3: Create the catalog user with a password
+- STEP 4: GRANT the catalog user to the catalog database
+- STEP 5: Modify the database_setup.py script to account for changes from SQLite to Postgres
+- STEP 6: Run database_setup.py to create the tables and relationships
+
+Apache and WSGI setup summary:
+- STEP 1: Create project5.wsgi to import the flask application (placing the html directory into the path)
+- STEP 2: Edit /etc/apache2/sites-enabled/000-default.conf to point WSGIScriptAlias to the project5.wsgi
+- STEP 3: Restart apache2
+
+Script change summary:
+- justin_warfield_project_5.py - Needed the path added to import database_setup
+- justin_warfield_project_5.py - The engine needed updated with the correct DSN
+- justin_warfield_project_5.py - Needed to add pytz/utc to datetime to allow for item updates
+- justin_warfield_project_5.py - Removed hardcoded credentials and app.secret into app_config.json and added it to .gitignore
+- database_setup.py - Removed hardcoded credentials and app.secret into app_config.json and added it to .gitignore
+- database_setup.py - Removed collation='NOCASE'.  Postgres didn't like it and it wasn't needed to keep column unique
+- client_secrets.json - A new oAuth key was generated and used http://project5.digitalwarfield.com instead of localhost
+
+Device change summary:
+- Change the SSH port from 22 to 2200
+- Enable UFW and only allow 80, 123 and 2200
+- Run apt-get update and apt-get upgrade to collect/install package updates
+- Create a grader user and generate an ssh keypair for their access
+- Install git to push and pull updates as required
+
+
+# Item Catalog - Project 4
 
 This project was created for Udacity Project 5.  The requirements for this project were:  
 
