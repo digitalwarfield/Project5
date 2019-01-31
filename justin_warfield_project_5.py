@@ -15,7 +15,7 @@ from flask import session as login_session
 from functools import wraps
 from datetime import datetime
 from sqlalchemy.pool import SingletonThreadPool
-
+from pytz import utc
 import sys
 # Add the working path so we can call database_setup
 working_path = "/var/www/html"
@@ -38,9 +38,8 @@ except Exception:
     print("Failed to open app_config.json file")
     raise
 
-#engine = create_engine('sqlite:///catalog.db',
-#                       connect_args={'check_same_thread': False})
 database_params = "postgresql://{}:{}@localhost/{}".format(user,password,database)
+engine = create_engine(database_params)
 Session = sessionmaker(bind=engine)
 session = Session()
 
@@ -78,7 +77,7 @@ def login():
     None: Redirect to Google.  Google will send them back to /gconnect
     """
     try:
-        secrets_file = open("client_secrets.json", "r")
+        secrets_file = open("/var/www/html/client_secrets.json", "r")
         json_secrets = json.load(secrets_file)
         client_id = json_secrets["web"]["client_id"]
         redirect_uri = json_secrets["web"]["redirect_uris"][0]
@@ -116,7 +115,7 @@ def gconnect():
     """
     if request.args.get("state") == login_session["state"]:
         try:
-            secrets_file = open("client_secrets.json", "r")
+            secrets_file = open("/var/www/html/client_secrets.json", "r")
             json_secrets = json.load(secrets_file)
             client_id = json_secrets["web"]["client_id"]
             client_secret = json_secrets["web"]["client_secret"]
@@ -512,14 +511,15 @@ def item(cat_name, item_name, action):
                 found_item.description = request.form['description']
             if request.form['category']:
                 found_item.cat_id = request.form['category']
-                found_item.last_update = datetime.now()
+                found_item.last_update = datetime.now().replace(tzinfo=utc)
             try:
                 session.add(found_item)
                 session.commit()
                 flash("Successful item edit", "info")
                 return redirect(url_for('mainPage'))
-            except Exception:
+            except Exception as e:
                 session.rollback()
+                flash(e)
                 flash("Failed item edit", "error")
                 return redirect(url_for('mainPage'))
 
