@@ -1,6 +1,7 @@
 # Linux Deployment - Project 5
 
 IP of server: 3.90.185.173
+SSH port: 2200
 Website URL: http://project5.digitalwarfield.com
 
 #### These are the changes that were required from Project 4 to 5
@@ -36,6 +37,14 @@ Script change summary:
 - database_setup.py - Removed hardcoded credentials and app.secret into app_config.json and added it to .gitignore
 - database_setup.py - Removed collation='NOCASE'.  Postgres didn't like it and it wasn't needed to keep column unique
 - client_secrets.json - A new oAuth key was generated and used http://project5.digitalwarfield.com instead of localhost
+
+Resources used:
+- Help with timezones and postgress https://pypi.org/project/pytz/
+- WSGI configuraton - http://flask.pocoo.org/docs/0.12/deploying/mod_wsgi/
+- Postgres CREATE USER - https://www.postgresql.org/docs/8.0/sql-createuser.html
+- Postgress GRANT - https://www.postgresql.org/docs/9.0/sql-grant.html
+- pip install - https://pip.pypa.io/en/stable/installing/
+
 
 Device change summary:
 - Change the SSH port from 22 to 2200
