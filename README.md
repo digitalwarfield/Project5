@@ -28,10 +28,11 @@ Postres Setup Summary
 Apache and WSGI setup summary:
 - STEP 1: Create project5.wsgi to import the flask application (placing the html directory into the path)
 - STEP 2: Edit /etc/apache2/sites-enabled/000-default.conf to point WSGIScriptAlias to the project5.wsgi
-- STEP 3: Restart apache2
+- STEP 3: Add WSGIDaemonProcess home=/var/www/html so justin_warfield_project_5 could read database_setup
+- STEP 4: Added `WSGIPythonPath /var/www/html` to apache2.conf to solve PEP8 issues on wsgi file
+- STEP 5: Restart apache2
 
 Script change summary:
-- justin_warfield_project_5.py - Needed the path added to import database_setup
 - justin_warfield_project_5.py - The engine needed updated with the correct DSN
 - justin_warfield_project_5.py - Needed to add pytz/utc to datetime to allow for item updates
 - justin_warfield_project_5.py - Removed hardcoded credentials and app.secret into app_config.json and added it to .gitignore
@@ -45,7 +46,8 @@ Resources used:
 - Postgres CREATE USER - https://www.postgresql.org/docs/8.0/sql-createuser.html
 - Postgress GRANT - https://www.postgresql.org/docs/9.0/sql-grant.html
 - pip install - https://pip.pypa.io/en/stable/installing/
-
+- WSGIPythonPath - https://modwsgi.readthedocs.io/en/develop/configuration-directives/WSGIPythonPath.html
+- WSGIDaemonProcess - https://modwsgi.readthedocs.io/en/develop/configuration-directives/WSGIDaemonProcess.html
 
 Device change summary:
 - Change the SSH port from 22 to 2200
