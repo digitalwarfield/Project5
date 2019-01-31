@@ -10,14 +10,14 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
 from datetime import datetime
-
+import json
 
 Base = declarative_base()
 
 
 class Users(Base):
     __tablename__ = 'users'
-    email = Column(String(256)),
+    email = Column(String(256),
                    nullable=False,
                    unique=True)
     user_id = Column(Integer, primary_key=True)
@@ -28,7 +28,7 @@ class Users(Base):
 class Categories(Base):
     __tablename__ = 'categories'
     # Only allow for one category to be added regardless of case
-    name = Column(String(100)), nullable=False, unique=True)
+    name = Column(String(100), nullable=False, unique=True)
     cat_id = Column(Integer, primary_key=True)
     users = relationship(Users)
     user_id = Column(Integer, ForeignKey('users.user_id'))
@@ -43,7 +43,7 @@ class Categories(Base):
 
 class Items(Base):
     __tablename__ = 'items'
-    title = Column(String(80)), nullable=False)
+    title = Column(String(80), nullable=False)
     item_id = Column(Integer, primary_key=True)
     description = Column(Text)
     last_update = Column(DateTime(timezone=True),
