@@ -1,7 +1,8 @@
 # Linux Deployment - Project 5
 
-IP of server: 3.90.185.173
-Website URL: http://project5.digitalwarfield.com
+- IP of server: 3.90.185.173
+- SSH port: 2200
+- Website URL: http://project5.digitalwarfield.com
 
 #### These are the changes that were required from Project 4 to 5
 Packages Added
@@ -14,6 +15,7 @@ Packages Added
 - Apache - `sudo apt-get install apache2`
 - Libapache2-mod-wsgi - `sudo apt-get install libapache2-mod-wsgi`
 - Postgres - `sudo apt-get install postgresql`
+- PEP8 styling - `sudo pip install pycodestyle`
 
 Postres Setup Summary
 - STEP 1: Switch the running user to postgres and then run psql
@@ -37,13 +39,22 @@ Script change summary:
 - database_setup.py - Removed collation='NOCASE'.  Postgres didn't like it and it wasn't needed to keep column unique
 - client_secrets.json - A new oAuth key was generated and used http://project5.digitalwarfield.com instead of localhost
 
+Resources used:
+- Help with timezones and postgress https://pypi.org/project/pytz/
+- WSGI configuraton - http://flask.pocoo.org/docs/0.12/deploying/mod_wsgi/
+- Postgres CREATE USER - https://www.postgresql.org/docs/8.0/sql-createuser.html
+- Postgress GRANT - https://www.postgresql.org/docs/9.0/sql-grant.html
+- pip install - https://pip.pypa.io/en/stable/installing/
+
+
 Device change summary:
 - Change the SSH port from 22 to 2200
 - Enable UFW and only allow 80, 123 and 2200
 - Run apt-get update and apt-get upgrade to collect/install package updates
 - Create a grader user and generate an ssh keypair for their access
 - Install git to push and pull updates as required
-
+- Changed permissions to ubuntu:www-data on /var/www/html
+- Updated group membership for ubuntu and grader to www-data group
 
 # Item Catalog - Project 4
 
