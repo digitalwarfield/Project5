@@ -16,6 +16,7 @@ from functools import wraps
 from datetime import datetime
 from sqlalchemy.pool import SingletonThreadPool
 
+import sys
 # Add the working path so we can call database_setup
 working_path = "/var/www/html"
 sys.path.append(working_path)
