@@ -1,4 +1,3 @@
-import sys
 from sqlalchemy import (Column,
                         ForeignKey,
                         Integer,
@@ -80,7 +79,9 @@ except Exception:
     raise
 
 
-database_params = "postgresql://{}:{}@localhost/{}".format(user,password,database)
+database_params = "postgresql://{}:{}@localhost/{}".format(user,
+                                                           password,
+                                                           database)
 engine = create_engine(database_params)
 
 

@@ -16,13 +16,8 @@ from functools import wraps
 from datetime import datetime
 from sqlalchemy.pool import SingletonThreadPool
 from pytz import utc
-import sys
-# Add the working path so we can call database_setup
-working_path = "/var/www/html"
-sys.path.append(working_path)
-
-from database_setup import Categories, Items, Users
 import uuid
+from database_setup import Categories, Items, Users
 
 
 app = Flask(__name__)
@@ -38,7 +33,9 @@ except Exception:
     print("Failed to open app_config.json file")
     raise
 
-database_params = "postgresql://{}:{}@localhost/{}".format(user,password,database)
+database_params = "postgresql://{}:{}@localhost/{}".format(user,
+                                                           password,
+                                                           database)
 engine = create_engine(database_params)
 Session = sessionmaker(bind=engine)
 session = Session()
